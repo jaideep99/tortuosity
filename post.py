@@ -36,7 +36,7 @@ output = cv2.cvtColor(skel.copy(),cv2.COLOR_GRAY2BGR)
 for i,j in bpoints:
     cv2.circle(output,(i,j),1,[0,0,255],-1)
 
-# cv2.imwrite('branched.png',output)
+cv2.imwrite('skel.png',skel)
 
 cv2.imshow('img',img)
 cv2.imshow('thresh',thresh)

@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os
+import math
 from threading import Thread
 
 def border(image,size):
@@ -134,9 +135,6 @@ def branchpoints(img,thresh):
 def branchparallel(img,s,e):
 
     r,c = img.shape
-    
-    # output = cv2.cvtColor(thresh,cv2.COLOR_GRAY2BGR)
-
     img[img==255] = 1
 
 
@@ -165,11 +163,9 @@ def branchparallel(img,s,e):
 
             if flag==1:
                 points.append([j,i])
-                # cv2.circle(output,(j,i),2,[0,0,255],-1)
 
     print('thread ended')
 
-    # return points
 
 
 def get_rotations(kerns = None):
@@ -198,3 +194,57 @@ def setclahe(image,c,t):
     clahe = cv2.createCLAHE(clipLimit=c,tileGridSize=(t,t))
     res = clahe.apply(image)
     return res
+
+def distance(a,b):
+    res = (b[0]-a[0])**2 + (b[1]-a[1])**2
+    res = math.sqrt(res)
+
+    return res
+
+def get_angle(a,b,c):
+
+    ab = distance(a,b)
+    bc = distance(b,c)
+
+    angle = (a[0]*b[0]) + (a[1]*b[1])
+    angle = angle/(ab*bc)
+
+    angle = math.acos(angle)
+
+    return angle
+
+def getinflections(img):
+    
+    kernels = [np.array([[1,0,0],[0,1,0],[0,0,1]],dtype=np.float32),
+                np.array([[0,1,0],[0,1,0],[0,1,0]],dtype=np.float32),
+                np.array([[0,0,1],[0,1,0],[1,0,0]],dtype=np.float32),
+                np.array([[0,0,0],[1,1,1],[0,0,0]],dtype=np.float32)]
+
+    r,c = img.shape
+    img[img==255] = 1
+
+
+    points = []
+    for i in range(1,r-1):
+        for j in range(1,c-1):
+
+            if(img[i,j]==1):
+
+                roi = img[i-1:i+2, j-1 : j+2]
+
+                flag = 0
+
+                for k in kernels:
+
+                    p = np.sum(k)
+
+                    r = np.sum(np.multiply(roi,k))
+
+                    if(r==p):
+                        flag=1
+                        break
+
+                if flag==0:
+                    points.append([j,i])
+
+    return points        
