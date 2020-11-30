@@ -1,3 +1,4 @@
+from types import FrameType
 import cv2
 import numpy as np
 from utils import *
@@ -51,19 +52,7 @@ def fractal_dimension(img):
 
     r,c = img.shape
 
-    # pad = max(r,c)
-    
-    # limit = 64
-
-    # inc = pad//limit
-    # pad = limit*(inc+1)
-
-    # img = padding(img,pad)
-    # img[img>0] = 255
-
     temp = cv2.cvtColor(img.copy(),cv2.COLOR_GRAY2BGR)
-
-    # grids = [64,32,16,8,4,2,1]
 
     grids = []
 
@@ -74,8 +63,6 @@ def fractal_dimension(img):
         g = g*2
 
     grids = grids[::-1]
-
-    # r,c = img.shape
 
     img[img>0] = 1
     
@@ -103,7 +90,7 @@ def fractal_dimension(img):
 
                 roi = img[x:xh,y:yh]
 
-                gtemp = cv2.rectangle(gtemp,(y,x),(yh,xh),(0,0,255),1)
+                # gtemp = cv2.rectangle(gtemp,(y,x),(yh,xh),(0,0,255),1)
 
                 if 1 in roi:
                     count+=1
@@ -117,13 +104,15 @@ def fractal_dimension(img):
 
         box_counts.append(count)
 
-    print(grids,box_counts)
+    # print(grids,box_counts)
 
     fdimension = regression_slope(np.log(grids),np.log(box_counts))
 
     return fdimension
     
 
+# image = cv2.imread('skel.png')
+# print(image)
+# fd = fractal_dimension(image)
 
-
-
+# print(fd)

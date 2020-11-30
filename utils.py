@@ -1,3 +1,4 @@
+from math import inf
 import cv2
 import numpy as np
 import os
@@ -201,19 +202,9 @@ def distance(a,b):
 
     return res
 
-def get_angle(a,b,c):
 
-    ab = distance(a,b)
-    bc = distance(b,c)
 
-    angle = (a[0]*b[0]) + (a[1]*b[1])
-    angle = angle/(ab*bc)
-
-    angle = math.acos(angle)
-
-    return angle
-
-def getinflections(img):
+def get_inflections(img):
     
     kernels = [np.array([[1,0,0],[0,1,0],[0,0,1]],dtype=np.float32),
                 np.array([[0,1,0],[0,1,0],[0,1,0]],dtype=np.float32),
@@ -240,11 +231,29 @@ def getinflections(img):
 
                     r = np.sum(np.multiply(roi,k))
 
+                    print(roi)
+                    print(k)
+
                     if(r==p):
+                    
                         flag=1
                         break
 
                 if flag==0:
-                    points.append([j,i])
+                    points.append([i,j])
 
     return points        
+
+def get_angle(a,b,c):
+
+    ab = distance(a,b)
+    bc = distance(b,c)
+
+    angle = (a[0]*b[0]) + (a[1]*b[1])
+    angle = angle/(ab*bc)
+
+    angle = math.acos(angle)
+
+    return angle    
+
+
