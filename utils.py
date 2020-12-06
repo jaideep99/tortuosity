@@ -84,12 +84,10 @@ def branchpoints(img,thresh):
 
     r,c = img.shape
     
-    # output = cv2.cvtColor(thresh,cv2.COLOR_GRAY2BGR)
-
     img[img==255] = 1
 
-    ranges = [[1,148],[148,295],[295,442],[442,591]]
-
+    # ranges = [[1,148],[148,295],[295,442],[442,591]]
+    ranges = [[1,74],[74,147],[147,220],[220,293],[293,366],[366,439],[439,512],[512,591]]
     threads = []
     i = 0
     for x,y in ranges:
@@ -101,37 +99,6 @@ def branchpoints(img,thresh):
         threads[i].join()
 
     return points
-
-
-    # kernels = [np.array([[1,0,1],[0,1,0],[0,1,0]],dtype=np.float32),
-    #             np.array([[0,1,0],[1,1,1],[0,0,0]],dtype=np.float32),
-    #             np.array([[0,1,0],[0,1,1],[1,0,0]],dtype=np.float32),
-    #             np.array([[1,0,1],[0,1,0],[0,0,1]],dtype=np.float32)]
-
-    # kernels = get_rotations(kernels)
-    # points = []
-    # for i in range(1,r-1):
-    #     for j in range(1,c-1):
-
-    #         roi = img[i-1:i+2, j-1 : j+2]
-
-    #         flag = 0
-
-    #         for k in kernels:
-
-    #             p = np.sum(k)
-
-    #             r = np.sum(np.multiply(roi,k))
-
-    #             if(r==p):
-    #                 flag=1
-    #                 break
-
-    #         if flag==1:
-    #             points.appen([j,i])
-    #             # cv2.circle(output,(j,i),2,[0,0,255],-1)
-
-    # return points
 
 def branchparallel(img,s,e):
 
@@ -165,7 +132,7 @@ def branchparallel(img,s,e):
             if flag==1:
                 points.append([j,i])
 
-    print('thread ended')
+    # print('thread ended')
 
 
 

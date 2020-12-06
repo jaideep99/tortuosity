@@ -103,6 +103,11 @@ def compute_angle(a,b,c):
     cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
     angle = np.arccos(cosine_angle)
 
+    # if(angle == 0 or str(angle) == 'nan'):
+    #     print('found : '+str(angle))
+    #     print(a,b,c)
+    #     print()
+
     return np.degrees(angle)
 
 def get_angles(inflects):
@@ -116,4 +121,25 @@ def get_angles(inflects):
 
     return angles
 
+def contour_inflections(img):
+    cnts = cv2.findContours(img,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)[-2]
+
+    cnt = sorted(cnts, key=cv2.contourArea)[-1]
+
+    arclen = cv2.arcLength(cnt, True)
+
+    epsilon = arclen * 0.0075
+    approx = cv2.approxPolyDP(cnt, epsilon, True)
+    # canvas = cv2.cvtColor(np.zeros(img.shape,np.uint8),cv2.COLOR_GRAY2BGR)
+    # cv2.drawContours(canvas, [approx], -1, (0,0,255), 1)
+    pts = []
+    for pt in approx:
+        i,j = pt[0][1], pt[0][0]
+        if([i,j] not in pts):
+            pts.append([i,j])
+            # canvas[i][j] = [0,255,0]
     
+    # cv2.imshow('smooth',canvas)
+    # cv2.waitKey(0)
+    
+    return pts

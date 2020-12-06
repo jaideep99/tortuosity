@@ -28,7 +28,7 @@ def tortuosity(img):
     for cnt in contours:
         output = cv2.drawContours(np.zeros(img.shape,dtype = np.uint8),[cnt],-1,(255,255,255),1)
         count = np.count_nonzero(output)
-        if count>=15:            
+        if count>=30:            
 
             x,y,h,w = cv2.boundingRect(cnt)
 
@@ -45,31 +45,17 @@ def tortuosity(img):
 
             
 
-            inflections = getinflections(iroi,order)
+            inflections = contour_inflections(iroi)
+            clean = []
+            [clean.append(x) for x in inflections if x not in clean]
+
             angles = get_angles(inflections)
-            torts.append(mean(angles))
+            c_angles = [incom for incom in angles if str(incom) != 'nan']
+            torts.append(mean(c_angles))
 
             arcbased = arclength(order,iroi)
             arc_torts.append(arcbased)
 
-            
+    tortuos = (180/mean(torts))
 
-            if(count>=75 and k<5):
-                cv2.imwrite('roi/'+'roi'+str(k)+'.png',back)
-                out = cv2.cvtColor(back.copy(),cv2.COLOR_GRAY2BGR)
-                for i,j in inflections:
-                    out[i,j] = [0,0,255]
-                cv2.imwrite('inf/inf'+str(k)+'.png',out)
-                k+=1
-
-    print("Inflection Tortuosity : ")
-    print(mean(torts))
-    tortuos = (1-mean(torts)/180)
-    print(tortuos)
-
-    print("Arc Tortuosity : ")
-    tortuos = mean(arc_torts)
-    print(tortuos)
-
-img = cv2.imread('branched.png',0)
-tortuosity(img)
+    return mean(torts), tortuos, mean(arc_torts) 

@@ -4,7 +4,7 @@ import numpy as np
 import os
 from utils import *
 
-data_loc = 'datasets/train/images/'
+data_loc = 'datasets/test/images/'
 
 files = os.listdir(data_loc)
 data = []
@@ -30,12 +30,11 @@ model.load_weights('model/model.h5')
 pred = model.predict(data)
 
 for i in range(len(pred)):
-
     name = files[i]
     p = pred[i]
     p = cv2.normalize(p,p,0,255,cv2.NORM_MINMAX)
 
-    path = 'output/'+'pred_'+name[:-4]+'.png'
+    path = 'test_output/'+'pred_'+name[:-4]+'.png'
     print(path)
 
     cv2.imwrite(path,p)
